@@ -40,15 +40,9 @@ public class SearchUserAccountViewModel extends BaseObservable implements BaseVi
     }
 
     @Bindable
-    public String getBankName() {
-        return userModel.getBankName();
+    public String getBankInfo () {
+        return String.format("%1$s %2$s", userModel.getBankName(), userModel.getBankAccountNo());
     }
-
-    @Bindable
-    public String getBankAccountNo() {
-        return userModel.getBankAccountNo();
-    }
-
 
     @Override
     public int getViewType() {

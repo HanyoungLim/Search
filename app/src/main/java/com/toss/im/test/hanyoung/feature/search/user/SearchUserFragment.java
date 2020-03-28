@@ -121,6 +121,20 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
 
         private List<BaseViewModelAware> items = new ArrayList<>();
 
+        private SearchUserPresenter presenter = new SearchUserPresenter() {
+            @Override
+            public void onClickContact(View view, SearchUserContactViewModel viewModel) {
+                viewModel.setPinned(!viewModel.isPinned());
+                Log.d("SearchUserPresenter", "onClickContact");
+            }
+
+            @Override
+            public void onClickAccount(View view, SearchUserAccountViewModel viewModel) {
+                viewModel.setPinned(!viewModel.isPinned());
+                Log.d("SearchUserPresenter", "onClickAccount");
+            }
+        };
+
         @NonNull
         @Override
         public BaseDatabindingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -138,10 +152,7 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
 
         @Override
         public void onBindViewHolder(@NonNull BaseDatabindingViewHolder holder, int position) {
-            BaseViewModelAware item = getItem(position);
-            if (item != null) {
-                holder.setData(item);
-            }
+            holder.setData(getItem(position));
         }
 
         public void setItems(List<BaseViewModelAware> items) {
@@ -168,43 +179,56 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
             return items.get(position).getViewType();
         }
 
-        public class SearchUserTitleViewHolder extends BaseDatabindingViewHolder<ItemSearchUserTitleBinding, TitleViewModel> {
+        public class SearchUserTitleViewHolder extends BaseDatabindingViewHolder<ItemSearchUserTitleBinding, BaseViewModelAware> {
 
             public SearchUserTitleViewHolder(@NonNull ItemSearchUserTitleBinding vhBinding) {
                 super(vhBinding);
             }
 
             @Override
-            public void setData(TitleViewModel viewModel) {
-                vhBinding.setViewModel(viewModel);
-                vhBinding.executePendingBindings();
+            public void setData(BaseViewModelAware viewModel) {
+                if (viewModel instanceof TitleViewModel) {
+                    vhBinding.setViewModel((TitleViewModel) viewModel);
+                    vhBinding.executePendingBindings();
+                }
             }
         }
 
-        public class SearchUserContactViewHolder extends BaseDatabindingViewHolder<ItemSearchUserContactBinding, SearchUserContactViewModel> {
+        public class SearchUserContactViewHolder extends BaseDatabindingViewHolder<ItemSearchUserContactBinding, BaseViewModelAware> {
 
             public SearchUserContactViewHolder(@NonNull ItemSearchUserContactBinding vhBinding) {
                 super(vhBinding);
             }
 
             @Override
-            public void setData(SearchUserContactViewModel viewModel) {
-                vhBinding.setViewModel(viewModel);
-                vhBinding.executePendingBindings();
+            public void setData(BaseViewModelAware viewModel) {
+                if (viewModel instanceof SearchUserContactViewModel) {
+                    vhBinding.setViewModel((SearchUserContactViewModel)viewModel);
+                    vhBinding.setPresenter(presenter);
+                    vhBinding.executePendingBindings();
+                }
             }
         }
 
-        public class SearchUserAccountViewHolder extends BaseDatabindingViewHolder<ItemSearchUserAccountBinding, SearchUserAccountViewModel> {
+        public class SearchUserAccountViewHolder extends BaseDatabindingViewHolder<ItemSearchUserAccountBinding, BaseViewModelAware> {
 
             public SearchUserAccountViewHolder(@NonNull ItemSearchUserAccountBinding vhBinding) {
                 super(vhBinding);
             }
 
             @Override
-            public void setData(SearchUserAccountViewModel viewModel) {
-                vhBinding.setViewModel(viewModel);
-                vhBinding.executePendingBindings();
+            public void setData(BaseViewModelAware viewModel) {
+                if (viewModel instanceof SearchUserAccountViewModel) {
+                    vhBinding.setViewModel((SearchUserAccountViewModel)viewModel);
+                    vhBinding.setPresenter(presenter);
+                    vhBinding.executePendingBindings();
+                }
             }
         }
+    }
+
+    public interface SearchUserPresenter {
+        void onClickContact (View view, SearchUserContactViewModel viewModel);
+        void onClickAccount (View view, SearchUserAccountViewModel viewModel);
     }
 }

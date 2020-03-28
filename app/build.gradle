@@ -34,6 +34,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     testImplementation 'junit:junit:4.12'
 
+    //aac
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
@@ -42,8 +43,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
     implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
 
+    //rx
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.17'
+
+    //glide
+    implementation 'com.github.bumptech.glide:glide:3.8.0'
 
     implementation project(path: ':lib-api')
     implementation project(path: ':lib-commons')
