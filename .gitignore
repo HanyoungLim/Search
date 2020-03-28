@@ -1,6 +1,18 @@
+# built application files
+*.apk
+*.ap_
+*.apklib
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
 *.iml
 .gradle
 /local.properties
+/.idea
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
