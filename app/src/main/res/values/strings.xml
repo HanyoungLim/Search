@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Search</string>
+
+    <string name="search_hint">Search..</string>
+    <string name="search_user_account_title">계좌</string>
+    <string name="search_user_contact_title">연락처</string>
 </resources>

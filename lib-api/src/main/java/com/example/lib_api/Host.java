@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Host {
-	GITHUB_API("api.github.com", "api.github.com", "api.github.com", "api.github.com"),
 	TOSS_API("search-mock.herokuapp.com", "search-mock.herokuapp.com", "search-mock.herokuapp.com", "search-mock.herokuapp.com"),
 	;
 

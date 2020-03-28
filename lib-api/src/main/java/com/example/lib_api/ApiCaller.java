@@ -18,7 +18,6 @@ public class ApiCaller {
     private static ApiCaller instance;
 
     private Gson defaultGson = new GsonBuilder()
-            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
 
 
@@ -54,7 +53,7 @@ public class ApiCaller {
 
     private <T> String getBaseUrl (Class<T> service) {
         Scheme scheme = Scheme.HTTPS;
-        Host host = Host.GITHUB_API;
+        Host host = Host.TOSS_API;
 
         try {
             Field schemeField = service.getField("scheme");

@@ -1,4 +1,4 @@
-package com.example.lib_commons;
+package com.example.lib_commons.databinding;
 
 import android.widget.TextView;
 
