@@ -2,6 +2,7 @@ package com.toss.im.test.hanyoung.feature.search.user.db;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -20,9 +21,9 @@ public class PinnedUsersDB {
 
     private SQLiteDatabase pinnedUserDB;
 
-    public PinnedUsersDB(@NonNull Activity activity) {
+    public PinnedUsersDB(@NonNull Context context) {
         try {
-            pinnedUserDB = activity.openOrCreateDatabase(PINNED_USER_DB_NAME, Activity.MODE_PRIVATE, null);
+            pinnedUserDB = context.openOrCreateDatabase(PINNED_USER_DB_NAME, Activity.MODE_PRIVATE, null);
             pinnedUserDB.execSQL("CREATE TABLE IF NOT EXISTS " + PINNED_USER_TABLE_NAME + " (_id VARCHAR(100) NOT NULL UNIQUE );");
         } catch (NullPointerException e) {
             Log.e("SearchUserFragment", "failed load database", e);

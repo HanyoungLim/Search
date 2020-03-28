@@ -1,5 +1,6 @@
 package com.toss.im.test.hanyoung.feature.search.user;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,6 +49,20 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
     private PinnedUsersDB pinnedUserDB;
 
     private SearchUserRecyclerViewAdapter adapter;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        pinnedUserDB = new PinnedUsersDB(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (pinnedUserDB != null) {
+            pinnedUserDB.close();
+        }
+    }
 
     @Nullable
     @Override

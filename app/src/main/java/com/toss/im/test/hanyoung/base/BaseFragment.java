@@ -49,8 +49,8 @@ public class BaseFragment extends Fragment implements HasDefaultViewModelProvide
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDetach() {
+        super.onDetach();
         if (!compositeDisposable.isDisposed()) {
             compositeDisposable.dispose();
         }
