@@ -11,6 +11,10 @@ public class BaseUser implements Parcelable {
     public BaseUser() {
     }
 
+    public String getId () {
+        return name;
+    }
+
     public String getName() {
         return name;
     }

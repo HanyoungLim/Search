@@ -20,6 +20,7 @@ import com.toss.im.test.hanyoung.databinding.ItemSearchUserAccountBinding;
 import com.toss.im.test.hanyoung.databinding.ItemSearchUserContactBinding;
 import com.toss.im.test.hanyoung.databinding.ItemSearchUserTitleBinding;
 import com.toss.im.test.hanyoung.feature.search.SearchKeywordViewModel;
+import com.toss.im.test.hanyoung.feature.search.user.db.PinnedUsersDB;
 import com.toss.im.test.hanyoung.feature.search.user.viewmodel.SearchUserAccountViewModel;
 import com.toss.im.test.hanyoung.feature.search.user.viewmodel.SearchUserContactViewModel;
 import com.toss.im.test.hanyoung.feature.base.viewmodel.TitleViewModel;
@@ -33,6 +34,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -43,6 +45,7 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
     private FragmentSearchUserBinding binding;
 
     private SearchKeywordViewModel searchKeywordViewModel;
+    private PinnedUsersDB pinnedUserDB;
 
     private SearchUserRecyclerViewAdapter adapter;
 
@@ -51,6 +54,8 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_user, container, false);
         binding.setLifecycleOwner(this);
+
+        initParams();
 
         searchKeywordViewModel = SearchKeywordViewModel.getInstance(getActivity());
         searchKeywordViewModel.getKeywordModel().observe(this, this);
@@ -61,6 +66,11 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
         return binding.getRoot();
     }
 
+    private void initParams () {
+        if (pinnedUserDB == null) {
+            pinnedUserDB = new PinnedUsersDB(getActivity());
+        }
+    }
 
     private void initUi () {
 
@@ -80,36 +90,45 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
     }
 
     private void getData (String keyword) {
-        compositeDisposable.add(searchService.getUsersByKeyword(keyword)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(users -> {
-                    List<BaseViewModelAware> viewModelList = new ArrayList<>();
+        compositeDisposable.add(Single.zip(
+                Single.just(pinnedUserDB.getPinnedUserList(keyword)),    //로컬 db pinned user 검색
+                searchService.getUsersByKeyword(keyword)                 //api 검색
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()), (pinnedUserIdList, users) -> {
 
-                    viewModelList.add(new TitleViewModel(getActivity().getResources().getString(R.string.search_user_contact_title)));
-                    if (users.getContactUserList() != null && !users.getContactUserList().isEmpty()) {
-                        for (ContactUser contactUser : users.getContactUserList()) {
-                            viewModelList.add(new SearchUserContactViewModel(contactUser));
-                        }
-                    }
+                            List<BaseViewModelAware> viewModelList = new ArrayList<>();
 
-                    viewModelList.add(new TitleViewModel(getActivity().getResources().getString(R.string.search_user_account_title)));
-                    if (users.getAccountUserList() != null && !users.getAccountUserList().isEmpty()) {
-                        for (AccountUser accountUser : users.getAccountUserList()) {
-                            viewModelList.add(new SearchUserAccountViewModel(accountUser));
-                        }
-                    }
+                            viewModelList.add(new TitleViewModel(getActivity().getResources().getString(R.string.search_user_contact_title)));
+                            if (users.getContactUserList() != null && !users.getContactUserList().isEmpty()) {
+                                for (ContactUser contactUser : users.getContactUserList()) {
+                                    if (pinnedUserIdList.contains(contactUser.getId())) {
+                                        contactUser.setPinned(true);
+                                    }
+                                    viewModelList.add(new SearchUserContactViewModel(SearchUserFragment.this, contactUser));
+                                }
+                            }
 
-                    return viewModelList;
-                })
+                            viewModelList.add(new TitleViewModel(getActivity().getResources().getString(R.string.search_user_account_title)));
+                            if (users.getAccountUserList() != null && !users.getAccountUserList().isEmpty()) {
+                                for (AccountUser accountUser : users.getAccountUserList()) {
+                                    if (pinnedUserIdList.contains(accountUser.getId())) {
+                                        accountUser.setPinned(true);
+                                    }
+                                    viewModelList.add(new SearchUserAccountViewModel(SearchUserFragment.this, accountUser));
+                                }
+                            }
+
+                            return viewModelList;
+                        })
                 .subscribe(response -> {
                     adapter.setItems(response);
                     Log.d("SearchActivity", "getData success");
                 }, e -> {
                     Log.e("SearchActivity", "getData failed", e);
                 }));
-
     }
+
+
 
     @Override
     public void onChanged(String keyword) {
@@ -124,14 +143,31 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
         private SearchUserPresenter presenter = new SearchUserPresenter() {
             @Override
             public void onClickContact(View view, SearchUserContactViewModel viewModel) {
-                viewModel.setPinned(!viewModel.isPinned());
-                Log.d("SearchUserPresenter", "onClickContact");
+                boolean newPinned = !viewModel.getUserModel().isPinned();
+                viewModel.setPinned(newPinned);
+
+                if (newPinned) {
+                    pinnedUserDB.addUser(viewModel.getUserModel());
+                } else {
+                    pinnedUserDB.deleteUser(viewModel.getUserModel());
+                }
+
+
+                Log.d("SearchUserPresenter", "onClickContact pinned=" + newPinned);
             }
 
             @Override
             public void onClickAccount(View view, SearchUserAccountViewModel viewModel) {
-                viewModel.setPinned(!viewModel.isPinned());
-                Log.d("SearchUserPresenter", "onClickAccount");
+                boolean newPinned = !viewModel.getUserModel().isPinned();
+                viewModel.setPinned(newPinned);
+
+                if (newPinned) {
+                    pinnedUserDB.addUser(viewModel.getUserModel());
+                } else {
+                    pinnedUserDB.deleteUser(viewModel.getUserModel());
+                }
+
+                Log.d("SearchUserPresenter", "onClickAccount pinned=" + newPinned);
             }
         };
 
@@ -153,6 +189,7 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
         @Override
         public void onBindViewHolder(@NonNull BaseDatabindingViewHolder holder, int position) {
             holder.setData(getItem(position));
+            holder.getVhBinding().setLifecycleOwner(SearchUserFragment.this);
         }
 
         public void setItems(List<BaseViewModelAware> items) {

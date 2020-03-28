@@ -2,18 +2,30 @@ package com.toss.im.test.hanyoung.feature.search.user.viewmodel;
 
 import com.example.lib_api.model.ContactUser;
 import com.toss.im.test.hanyoung.custom.view.recycler.BaseViewModelAware;
+import com.toss.im.test.hanyoung.feature.base.viewmodel.BooleanViewModel;
 import com.toss.im.test.hanyoung.feature.search.user.VIEW_TYPE;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
-import androidx.databinding.library.baseAdapters.BR;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
-public class SearchUserContactViewModel extends BaseObservable implements BaseViewModelAware {
+public class SearchUserContactViewModel extends BaseObservable implements BaseViewModelAware, Observer<Boolean> {
 
     private ContactUser userModel;
 
-    public SearchUserContactViewModel(ContactUser userModel) {
+    private BooleanViewModel pinnedViewModel;
+
+    public SearchUserContactViewModel(Fragment fragment, ContactUser userModel) {
         this.userModel = userModel;
+        this.pinnedViewModel = BooleanViewModel.getInstance(fragment, userModel.getId());
+        this.pinnedViewModel.setModel(userModel.isPinned());
+        this.pinnedViewModel.getModel().observe(fragment, this);
+    }
+
+    public ContactUser getUserModel() {
+        return userModel;
     }
 
     @Bindable
@@ -22,13 +34,12 @@ public class SearchUserContactViewModel extends BaseObservable implements BaseVi
     }
 
     @Bindable
-    public boolean isPinned() {
-        return userModel.isPinned();
+    public MutableLiveData<Boolean> getPinned() {
+        return pinnedViewModel.getModel();
     }
 
     public void setPinned(boolean pinned) {
-        userModel.setPinned(pinned);
-        notifyPropertyChanged(BR.pinned);
+        pinnedViewModel.setModel(pinned);
     }
 
     @Bindable
@@ -44,5 +55,14 @@ public class SearchUserContactViewModel extends BaseObservable implements BaseVi
     @Override
     public int getViewType() {
         return VIEW_TYPE.CONTACT.ordinal();
+    }
+
+    @Override
+    public void onChanged(Boolean pinned) {
+        if (pinned == null) {
+            return;
+        }
+
+        userModel.setPinned(pinned);
     }
 }

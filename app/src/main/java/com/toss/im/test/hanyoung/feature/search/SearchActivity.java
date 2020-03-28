@@ -1,5 +1,6 @@
 package com.toss.im.test.hanyoung.feature.search;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 
