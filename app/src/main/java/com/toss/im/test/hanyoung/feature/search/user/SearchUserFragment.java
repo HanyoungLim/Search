@@ -70,7 +70,11 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_user, container, false);
         binding.setLifecycleOwner(this);
 
-        initParams();
+        if (savedInstanceState == null) {
+
+        } else {
+
+        }
 
         searchKeywordViewModel = SearchKeywordViewModel.getInstance(getActivity());
         searchKeywordViewModel.getKeywordModel().observe(this, this);
@@ -81,14 +85,7 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
         return binding.getRoot();
     }
 
-    private void initParams () {
-        if (pinnedUserDB == null) {
-            pinnedUserDB = new PinnedUsersDB(getActivity());
-        }
-    }
-
     private void initUi () {
-
         initRecyclerView();
     }
 
@@ -113,8 +110,8 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
 
                             List<BaseViewModelAware> viewModelList = new ArrayList<>();
 
-                            viewModelList.add(new TitleViewModel(getActivity().getResources().getString(R.string.search_user_contact_title)));
                             if (users.getContactUserList() != null && !users.getContactUserList().isEmpty()) {
+                                viewModelList.add(new TitleViewModel(getActivity().getResources().getString(R.string.search_user_contact_title)));
                                 for (ContactUser contactUser : users.getContactUserList()) {
                                     if (pinnedUserIdList.contains(contactUser.getId())) {
                                         contactUser.setPinned(true);
@@ -123,8 +120,8 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
                                 }
                             }
 
-                            viewModelList.add(new TitleViewModel(getActivity().getResources().getString(R.string.search_user_account_title)));
                             if (users.getAccountUserList() != null && !users.getAccountUserList().isEmpty()) {
+                                viewModelList.add(new TitleViewModel(getActivity().getResources().getString(R.string.search_user_account_title)));
                                 for (AccountUser accountUser : users.getAccountUserList()) {
                                     if (pinnedUserIdList.contains(accountUser.getId())) {
                                         accountUser.setPinned(true);
@@ -142,8 +139,6 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
                     Log.e("SearchActivity", "getData failed", e);
                 }));
     }
-
-
 
     @Override
     public void onChanged(String keyword) {
@@ -166,7 +161,6 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
                 } else {
                     pinnedUserDB.deleteUser(viewModel.getUserModel());
                 }
-
 
                 Log.d("SearchUserPresenter", "onClickContact pinned=" + newPinned);
             }
@@ -209,11 +203,9 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
 
         public void setItems(List<BaseViewModelAware> items) {
             this.items.clear();
-            if (items == null || items.isEmpty()) {
-                return;
+            if (items != null && !items.isEmpty()) {
+                this.items.addAll(items);
             }
-
-            this.items.addAll(items);
             notifyDataSetChanged();
         }
 

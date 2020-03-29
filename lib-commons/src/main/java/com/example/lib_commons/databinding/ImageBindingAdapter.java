@@ -1,7 +1,6 @@
 package com.example.lib_commons.databinding;
 
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 

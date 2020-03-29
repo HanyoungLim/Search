@@ -1,9 +1,10 @@
 package com.toss.im.test.hanyoung.feature.search;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.lib_commons.util.ParameterContants;
+import com.example.lib_commons.util.StringUtility;
 import com.toss.im.test.hanyoung.custom.view.text.SimpleTextWatcher;
 import com.toss.im.test.hanyoung.R;
 import com.toss.im.test.hanyoung.base.BaseActivity;
@@ -33,12 +34,22 @@ public class SearchActivity extends BaseActivity implements Observer<String> {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
 
+        String defaultKeyword = null;
+        if (getIntent() == null) {
+            //savedInstantState
+        } else {
+            defaultKeyword = getIntent().getStringExtra(ParameterContants.PARAM_SEARCH_DEFAULT_KEYWORD);
+        }
+
         searchKeywordViewModel = SearchKeywordViewModel.getInstance(this);
         searchKeywordViewModel.getKeywordModel().observe(this, this);
 
         initUI();
         initListener();
 
+        if (StringUtility.isNotNullOrEmpty(defaultKeyword)) {
+            binding.actSearchEt.setText(defaultKeyword);
+        }
     }
 
     private void initUI () {
@@ -71,7 +82,7 @@ public class SearchActivity extends BaseActivity implements Observer<String> {
             }
 
         })
-        .debounce(2000, TimeUnit.MILLISECONDS)
+        .debounce(1500, TimeUnit.MILLISECONDS)
         .subscribeOn(Schedulers.trampoline())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(response -> {
