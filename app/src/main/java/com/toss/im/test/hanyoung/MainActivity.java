@@ -34,16 +34,4 @@ public class MainActivity extends BaseActivity {
                     finish();
                 }));
     }
-
-
-
-    private void parseUrl () {
-        if (getIntent() == null || getIntent().getData() == null) {
-            return;
-        }
-
-        Uri uri = getIntent().getData();
-
-
-    }
 }
