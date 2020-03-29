@@ -14,6 +14,13 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
+
+/**
+ * 같은 viewStoreOwner에서 keyword 정보를 observing하기위해 만든 searchKeywordViewModel
+ *
+ * searchActivity와 searchUserFragment가 같은 viewStoreOwner로 viewModel를 사용하기때문에
+ * activity에서 typing text하면 fragment에서 특별한 이벤트버스 없이도 이벤를 받아서 검색한다.
+ */
 public class SearchKeywordViewModel extends AndroidViewModel {
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();

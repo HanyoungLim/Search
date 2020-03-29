@@ -14,6 +14,9 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
+/**
+ * 특정 유저 즐겨찾기 caching에 사용될 pinnedUserSqlDB;
+ */
 public class PinnedUsersDB {
     private final String PINNED_USER_DB_NAME = "pinned_user";
     private final String PINNED_USER_TABLE_NAME = "pinned_user_table";

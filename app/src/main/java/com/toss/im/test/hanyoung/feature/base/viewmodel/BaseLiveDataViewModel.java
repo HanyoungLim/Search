@@ -14,6 +14,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
+
+/**
+ * 간단한 livedata 사용하기위해 만든 baseLiveDataViewModel
+ *
+ * model이 baseObservable과 같은 uiModel에 대응가능하고
+ * setModel시에 backgroundThread, mainThread 두 케이스 모두 대응가능하다.
+ *
+ * 또한 rx의 observable도 자동 release시켜준다.
+ */
 public abstract class BaseLiveDataViewModel<M> extends AndroidViewModel {
 
     private androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {

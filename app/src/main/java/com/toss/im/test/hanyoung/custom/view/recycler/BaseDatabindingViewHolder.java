@@ -1,11 +1,14 @@
 package com.toss.im.test.hanyoung.custom.view.recycler;
 
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * recycler view에서 databinding을 사용하기위한 기본 viewHolder
+ *
+ */
 public abstract class BaseDatabindingViewHolder<B extends ViewDataBinding, VM> extends RecyclerView.ViewHolder {
 
     protected B vhBinding;

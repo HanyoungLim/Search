@@ -14,6 +14,12 @@ import androidx.lifecycle.HasDefaultViewModelProviderFactory;
 import androidx.lifecycle.ViewModelProvider;
 import io.reactivex.disposables.CompositeDisposable;
 
+/**
+ * BaseFragment
+ *
+ * onActivityResult 시에 자식 fragment에 이벤트전파를 위한 기본세팅 및
+ * androidViewModel 사용하기위한 HasDefaultViewModelProviderFactory 구현한다.
+ */
 public class BaseFragment extends Fragment implements HasDefaultViewModelProviderFactory {
 
     protected CompositeDisposable compositeDisposable = new CompositeDisposable();

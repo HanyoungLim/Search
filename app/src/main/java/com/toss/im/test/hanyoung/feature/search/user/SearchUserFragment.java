@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.lib_api.ApiCaller;
 import com.example.lib_api.model.AccountUser;
@@ -39,6 +40,11 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+/**
+ * SearchUserFragment
+ *
+ * rx의 zip을 사용하여, 로컬pinned유저, 및 api response를 통해받은유저정보를 동시에 response함
+ */
 public class SearchUserFragment extends BaseFragment implements Observer<String> {
 
     private SearchService searchService = ApiCaller.getInstance().create(SearchService.class);
@@ -134,9 +140,9 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
                         })
                 .subscribe(response -> {
                     adapter.setItems(response);
-                    Log.d("SearchActivity", "getData success");
+                    Log.d("SearchUserFragment", "getData success");
                 }, e -> {
-                    Log.e("SearchActivity", "getData failed", e);
+                    Log.e("SearchUserFragment", "getData failed", e);
                 }));
     }
 
@@ -162,7 +168,10 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
                     pinnedUserDB.deleteUser(viewModel.getUserModel());
                 }
 
-                Log.d("SearchUserPresenter", "onClickContact pinned=" + newPinned);
+                String message = String.format("%1$s " + viewModel.getName(), newPinned ? "pin" : "unpin");
+                Toast.makeText(view.getContext(), message, Toast.LENGTH_SHORT).show();
+
+                Log.d("SearchUserFragment", "onClickContact " + message);
             }
 
             @Override
@@ -176,7 +185,10 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
                     pinnedUserDB.deleteUser(viewModel.getUserModel());
                 }
 
-                Log.d("SearchUserPresenter", "onClickAccount pinned=" + newPinned);
+                String message = String.format("%1$s " + viewModel.getName(), newPinned ? "pin" : "unpin");
+                Toast.makeText(view.getContext(), message, Toast.LENGTH_SHORT).show();
+
+                Log.d("SearchUserFragment", "onClickContact " + message);
             }
         };
 

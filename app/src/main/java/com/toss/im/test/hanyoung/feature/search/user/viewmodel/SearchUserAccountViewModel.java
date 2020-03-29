@@ -1,20 +1,23 @@
 package com.toss.im.test.hanyoung.feature.search.user.viewmodel;
 
-import android.accounts.Account;
 
 import com.example.lib_api.model.AccountUser;
-import com.example.lib_api.model.ContactUser;
 import com.toss.im.test.hanyoung.custom.view.recycler.BaseViewModelAware;
 import com.toss.im.test.hanyoung.feature.base.viewmodel.BooleanViewModel;
 import com.toss.im.test.hanyoung.feature.search.user.VIEW_TYPE;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
-import androidx.databinding.library.baseAdapters.BR;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+
+/**
+ * SearchUserAccountViewModel
+ *
+ * 즐겨찾기 상태만 viewModel을 쓴 이유는 특정 키값(유저이름)으로 데이터를 공유하기위해서
+ * 같은이름이라면 (ex, 이소유) account 에서 pin하면 contact에서도 자동 pin된다.
+ */
 
 public class SearchUserAccountViewModel extends BaseObservable implements BaseViewModelAware, Observer<Boolean> {
 

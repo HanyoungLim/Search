@@ -21,6 +21,13 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+/**
+ * SearchActivity
+ *
+ * api사용을 최소화하기위해 마지막 검색어 입력후 최대 1.5초간 다른입력이 없으면 검색시작하도록 함.
+ * rx의 debounce를 활용함.
+ *
+ */
 public class SearchActivity extends BaseActivity implements Observer<String> {
 
     private ActivitySearchBinding binding;
