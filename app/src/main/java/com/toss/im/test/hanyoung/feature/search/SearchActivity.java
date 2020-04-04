@@ -42,7 +42,7 @@ public class SearchActivity extends BaseActivity implements Observer<String> {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
 
         String defaultKeyword = null;
-        if (getIntent() == null) {
+        if (savedInstanceState == null) {
             //savedInstantState
         } else {
             defaultKeyword = getIntent().getStringExtra(ParameterContants.PARAM_SEARCH_DEFAULT_KEYWORD);

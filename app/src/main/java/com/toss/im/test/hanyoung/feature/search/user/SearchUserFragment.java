@@ -1,7 +1,9 @@
 package com.toss.im.test.hanyoung.feature.search.user;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import com.example.lib_api.ApiCaller;
 import com.example.lib_api.model.AccountUser;
 import com.example.lib_api.model.ContactUser;
 import com.example.lib_api.service.SearchService;
+import com.example.lib_commons.util.StringUtility;
 import com.toss.im.test.hanyoung.R;
 import com.toss.im.test.hanyoung.base.BaseFragment;
 import com.toss.im.test.hanyoung.custom.view.recycler.BaseDatabindingViewHolder;
@@ -21,6 +24,7 @@ import com.toss.im.test.hanyoung.databinding.FragmentSearchUserBinding;
 import com.toss.im.test.hanyoung.databinding.ItemSearchUserAccountBinding;
 import com.toss.im.test.hanyoung.databinding.ItemSearchUserContactBinding;
 import com.toss.im.test.hanyoung.databinding.ItemSearchUserTitleBinding;
+import com.toss.im.test.hanyoung.feature.TestActivity;
 import com.toss.im.test.hanyoung.feature.search.SearchKeywordViewModel;
 import com.toss.im.test.hanyoung.feature.search.user.db.PinnedUsersDB;
 import com.toss.im.test.hanyoung.feature.search.user.viewmodel.SearchUserAccountViewModel;
@@ -36,6 +40,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -104,13 +109,27 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
     }
 
     private void initListener () {
+        binding.drawerSwipeRefresh.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
+            @Override
+            public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
+                return binding.recyclerView.getScrollY() != 0;
+            }
+        });
 
+        binding.drawerSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (searchKeywordViewModel.getKeywordModel() != null) {
+                    searchKeywordViewModel.setKeyword(searchKeywordViewModel.getKeywordModel().getValue());
+                }
+            }
+        });
     }
 
     private void getData (String keyword) {
         compositeDisposable.add(Single.zip(
                 Single.just(pinnedUserDB.getPinnedUserList(keyword)),    //로컬 db pinned user 검색
-                searchService.getUsersByKeyword(keyword)                 //api 검색
+                searchService.getUsersByKeyword(keyword)    //api 검색
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()), (pinnedUserIdList, users) -> {
 
@@ -138,8 +157,22 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
 
                             return viewModelList;
                         })
+                .doOnSubscribe(disposable -> {
+                    binding.drawerSwipeRefresh.setRefreshing(true);
+                })
+                .doFinally(() -> {
+                    binding.drawerSwipeRefresh.setRefreshing(false);
+                })
                 .subscribe(response -> {
                     adapter.setItems(response);
+                    if (response.isEmpty() && StringUtility.isNotNullOrEmpty(keyword)) {
+                        binding.recyclerView.setVisibility(View.GONE);
+                        binding.fragSearchUserNotFountTv.setVisibility(View.VISIBLE);
+                        binding.fragSearchUserNotFountTv.setText(Html.fromHtml(getActivity().getResources().getString(R.string.search_user_not_found, keyword)));
+                    } else {
+                        binding.recyclerView.setVisibility(View.VISIBLE);
+                        binding.fragSearchUserNotFountTv.setVisibility(View.GONE);
+                    }
                     Log.d("SearchUserFragment", "getData success");
                 }, e -> {
                     Log.e("SearchUserFragment", "getData failed", e);
@@ -150,6 +183,11 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
     public void onChanged(String keyword) {
         Log.d("SearchUserFragment", "onChanged keyword = " + keyword);
         getData(keyword);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<BaseDatabindingViewHolder> {
@@ -172,6 +210,9 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
                 Toast.makeText(view.getContext(), message, Toast.LENGTH_SHORT).show();
 
                 Log.d("SearchUserFragment", "onClickContact " + message);
+
+                Intent intent = new Intent(getActivity(), TestActivity.class);
+                startActivityForResult(intent, 1234);
             }
 
             @Override

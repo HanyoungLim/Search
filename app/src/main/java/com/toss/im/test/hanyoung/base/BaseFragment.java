@@ -1,6 +1,7 @@
 package com.toss.im.test.hanyoung.base;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.example.lib_commons.ApplicationContextWrapper;
 
@@ -35,9 +36,10 @@ public class BaseFragment extends Fragment implements HasDefaultViewModelProvide
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        for (Fragment activeFragment : getActiveFragmentList()) {
-            activeFragment.onActivityResult(requestCode, resultCode, data);
-        }
+        Log.d("BaseFragment", "onActivityResult " + requestCode);
+//        for (Fragment activeFragment : getActiveFragmentList()) {
+//            activeFragment.onActivityResult(requestCode, resultCode, data);
+//        }
     }
 
     protected List<Fragment> getActiveFragmentList() {

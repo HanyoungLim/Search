@@ -1,6 +1,7 @@
 package com.toss.im.test.hanyoung.base;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.toss.im.test.hanyoung.application.BaseApplication;
 
@@ -37,9 +38,10 @@ public class BaseActivity extends AppCompatActivity implements HasDefaultViewMod
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        for (Fragment activeFragment : getActiveFragmentList()) {
-            activeFragment.onActivityResult(requestCode, resultCode, data);
-        }
+        Log.d("BaseActivity", "onActivityResult " + requestCode);
+//        for (Fragment activeFragment : getActiveFragmentList()) {
+//            activeFragment.onActivityResult(requestCode, resultCode, data);
+//        }
     }
 
     protected List<Fragment> getActiveFragmentList() {

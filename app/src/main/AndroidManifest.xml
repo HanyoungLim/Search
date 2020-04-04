@@ -34,9 +34,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".feature.search.SearchActivity"
+        <activity
+            android:name=".feature.search.SearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".feature.TestActivity" />
     </application>
 
 </manifest>

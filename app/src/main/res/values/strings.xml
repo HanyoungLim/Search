@@ -4,4 +4,5 @@
     <string name="search_hint">Search..</string>
     <string name="search_user_account_title">계좌</string>
     <string name="search_user_contact_title">연락처</string>
+    <string name="search_user_not_found"><![CDATA[<font color=\"#ff0000\">%1$s</font>로 검색된 유저가 없습니다.]]></string>
 </resources>
