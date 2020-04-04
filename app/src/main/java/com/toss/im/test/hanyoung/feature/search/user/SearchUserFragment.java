@@ -14,6 +14,7 @@ import com.example.lib_api.ApiCaller;
 import com.example.lib_api.model.AccountUser;
 import com.example.lib_api.model.ContactUser;
 import com.example.lib_api.service.SearchService;
+import com.example.lib_commons.util.ParameterContants;
 import com.example.lib_commons.util.StringUtility;
 import com.toss.im.test.hanyoung.R;
 import com.toss.im.test.hanyoung.base.BaseFragment;
@@ -212,7 +213,7 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
                 Log.d("SearchUserFragment", "onClickContact " + message);
 
                 Intent intent = new Intent(getActivity(), TestActivity.class);
-                startActivityForResult(intent, 1234);
+                startActivityForResult(intent, ParameterContants.REQ_TEST);
             }
 
             @Override
@@ -230,6 +231,9 @@ public class SearchUserFragment extends BaseFragment implements Observer<String>
                 Toast.makeText(view.getContext(), message, Toast.LENGTH_SHORT).show();
 
                 Log.d("SearchUserFragment", "onClickContact " + message);
+
+                Intent intent = new Intent(getActivity(), TestActivity.class);
+                getActivity().startActivityForResult(intent, ParameterContants.REQ_TEST);
             }
         };
 

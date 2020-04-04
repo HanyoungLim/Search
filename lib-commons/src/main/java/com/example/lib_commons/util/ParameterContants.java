@@ -4,6 +4,7 @@ public class ParameterContants {
 
     //req
     public static final int REQ_SEARCH = 101;
+    public static final int REQ_TEST = 1234;
 
     //res
 

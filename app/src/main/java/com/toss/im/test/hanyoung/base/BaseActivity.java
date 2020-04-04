@@ -22,6 +22,12 @@ import io.reactivex.disposables.CompositeDisposable;
  *
  * onActivityResult 시에 자식 fragment에 이벤트전파를 위한 기본세팅 및
  * androidViewModel 사용하기위한 HasDefaultViewModelProviderFactory 구현한다.
+ *
+ *
+ * onAcitivityResult에 명시적으로 fragment onActivityResult에 이벤트를 전파해야하는이유
+ *
+ * 1. fragment에서 startActivityResult를 실행하면 결과값을 fragment가 받지만 **** activity도 임의의난수 req코드로도 받는다 ****. 예상하지못한이슈가발생가능성있음. 중요!!
+ * 2. getActivity.startActivityResult를 하면 fragment의 부모인 activity가 요청한 req로 받아서 유연하게 다음 작업을 처리가능하다.
  */
 public class BaseActivity extends AppCompatActivity implements HasDefaultViewModelProviderFactory {
 

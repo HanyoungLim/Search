@@ -14,7 +14,7 @@ public class TestActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DataBindingUtil.setContentView(this, R.layout.activity_search);
+        DataBindingUtil.setContentView(this, R.layout.activity_test);
     }
 
     @Override
