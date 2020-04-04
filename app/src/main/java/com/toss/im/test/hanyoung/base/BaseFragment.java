@@ -36,7 +36,7 @@ public class BaseFragment extends Fragment implements HasDefaultViewModelProvide
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("BaseFragment", "onActivityResult " + requestCode);
+        Log.d("BaseFragment", "onActivityResult req=" + requestCode + ", res=" + resultCode);
 //        for (Fragment activeFragment : getActiveFragmentList()) {
 //            activeFragment.onActivityResult(requestCode, resultCode, data);
 //        }

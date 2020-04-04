@@ -41,10 +41,16 @@ public class BaseActivity extends AppCompatActivity implements HasDefaultViewMod
         childFragmentList.add(new WeakReference(fragment));
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param resultCode   activity finish에서 해당로직처리할경우 super.finish 뒤에 setResult 넣으면 resultcode는 항상0 (cancel)로 오니 주의!!
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("BaseActivity", "onActivityResult " + requestCode);
+        Log.d("BaseActivity", "onActivityResult req=" + requestCode + ", res=" + resultCode);
 //        for (Fragment activeFragment : getActiveFragmentList()) {
 //            activeFragment.onActivityResult(requestCode, resultCode, data);
 //        }

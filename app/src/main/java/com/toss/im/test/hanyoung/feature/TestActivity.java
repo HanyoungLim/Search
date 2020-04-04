@@ -19,7 +19,10 @@ public class TestActivity extends BaseActivity {
 
     @Override
     public void finish() {
+        Intent intent = new Intent();
+        intent.putExtra("finish", true);
+
+        setResult(RESULT_OK, intent);
         super.finish();
-        setResult(RESULT_OK, new Intent());
     }
 }
